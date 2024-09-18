@@ -1,0 +1,14 @@
+services:
+  web:
+    container_name: CreditTransactionApi_Web_Local
+    build: 
+      context: ../
+      dockerfile: Infrastructure/Dockerfile
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthcheck || exit 1
+      interval: 500ms
+      timeout: 5s
+      retries: 10
+      start_period: 100ms
