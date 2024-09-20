@@ -13,7 +13,7 @@ public static class ConnectionString
         string? user = GetEnvironmentVariable(ENV_USER_LABEL);
         string? password = GetEnvironmentVariable(ENV_PASSWORD_LABEL);
         string? db = GetEnvironmentVariable(ENV_DB_LABEL);
-        string? port = GetEnvironmentVariable(ENV_DB_LABEL);
+        string? port = GetEnvironmentVariable(ENV_PORT_LABEL);
 
         if (user is null
             || password is null
