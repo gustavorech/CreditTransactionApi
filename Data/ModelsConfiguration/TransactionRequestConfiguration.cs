@@ -22,7 +22,6 @@ public class TransactionRequestConfiguration : IEntityTypeConfiguration<Transact
             .IsRequired();
 
         builder.Property(e => e.TransactionDate)
-            .ValueGeneratedOnAdd()
             .IsRequired();
 
         builder.Property(e => e.ResultCode)

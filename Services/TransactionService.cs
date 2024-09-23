@@ -19,6 +19,7 @@ public class TransactionService
 
     public async Task InsertTransactionRequest(TransactionRequest transactionRequest)
     {
+        transactionRequest.TransactionDate = DateTimeOffset.UtcNow;
         context.TransactionRequests.Add(transactionRequest);
         await context.SaveChangesAsync();
     }
@@ -35,7 +36,6 @@ public class TransactionService
         {
             TransactionRequest = transactionRequest
         };
-        context.TransactionEntries.Add(transactionEntry);
 
         (AccountPartitionType partitionType, transactionEntry.Merchant) =
             await accountService.DecideAccountPartitionTypeForRequest(transactionRequest);
@@ -52,6 +52,11 @@ public class TransactionService
         {
             partitionType = AccountPartitionType.CASH;
             transactionResultCode = await accountService.ApplyTransactionIfHasFunds(transactionEntry, account, partitionType);
+        }
+
+        if (transactionResultCode == TransactionResultCode.APPROVED)
+        {
+            context.TransactionEntries.Add(transactionEntry);
         }
 
         await context.SaveChangesAsync();
