@@ -26,6 +26,7 @@ public class TransactionRequestConfiguration : IEntityTypeConfiguration<Transact
             .IsRequired();
 
         builder.Property(e => e.ResultCode)
+            .HasConversion<EnumToStringValueConverter<TransactionResultCode>>()
             .IsRequired(false);
     }
 }

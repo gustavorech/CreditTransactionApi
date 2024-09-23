@@ -11,7 +11,7 @@ public class TransactionRequest
     public int MerchantCategoryCode { get; set; }
     public string MerchantName { get; set; } = null!;
     public DateTimeOffset TransactionDate { get; set; }
-    public string? ResultCode { get; set; } = null!;
+    public TransactionResultCode? ResultCode { get; set; } = null!;
 
     public TransactionEntry? CreditTransaction { get; set; } = null!;
 }

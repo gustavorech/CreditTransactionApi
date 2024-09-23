@@ -12,9 +12,7 @@ public class AccountPartitionConfiguration : IEntityTypeConfiguration<AccountPar
             .ValueGeneratedOnAdd();
 
         builder.Property(e => e.AccountPartitionType)
-            .HasConversion(
-                v => v.ToString(),
-                v => (AccountPartitionType)Enum.Parse(typeof(AccountPartitionType), v))
+            .HasConversion<EnumToStringValueConverter<AccountPartitionType>>()
             .IsRequired();
 
         builder.HasOne(e => e.Account)
