@@ -41,7 +41,7 @@ public class TransactionService
             await accountService.DecideAccountPartitionTypeForRequest(transactionRequest);
 
         var account = await context.Accounts
-            .FirstAsync(c => c.Id == transactionRequest.AccountId);
+            .SingleAsync(c => c.Id == transactionRequest.AccountId);
 
         var transactionResultCode = await accountService.ApplyTransactionIfHasFunds(transactionEntry, account, partitionType);
 

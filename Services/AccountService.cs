@@ -18,7 +18,7 @@ public class AccountService
     {
         var merchant = await context.Merchants
             .Include(c => c.MerchantCategory)
-            .FirstOrDefaultAsync(c => c.Name == transactionRequest.MerchantName);
+            .SingleOrDefaultAsync(c => c.Name == transactionRequest.MerchantName);
 
         bool shouldGetPartitionTypeFromMerchant = merchant is not null;
         if (shouldGetPartitionTypeFromMerchant)
@@ -27,7 +27,7 @@ public class AccountService
         }
 
         var merchantCategory = await context.MerchantCategories
-            .FirstOrDefaultAsync(c => c.Code == transactionRequest.MerchantCategoryCode);
+            .SingleOrDefaultAsync(c => c.Code == transactionRequest.MerchantCategoryCode);
 
         if (merchantCategory is not null)
         {
@@ -44,7 +44,7 @@ public class AccountService
         AccountPartitionType accountPartitionType)
     {
         var accountPartition = await context.AccountPartitions
-            .FirstAsync(c => c.AccountId == account.Id && c.AccountPartitionType == accountPartitionType);
+            .SingleAsync(c => c.AccountId == account.Id && c.AccountPartitionType == accountPartitionType);
 
         transactionEntry.AccountPartition = accountPartition;
 
