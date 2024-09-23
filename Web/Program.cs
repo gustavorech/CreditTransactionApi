@@ -1,6 +1,5 @@
 using CreditTransactionApi.Data;
-
-using FluentValidation;
+using CreditTransactionApi.Services;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +11,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(connectionString, c => c.MigrationsAssembly("Data"))
 );
 
-builder.Services.AddSingleton<TransactionRequestValidator>();
+builder.Services.AddSingleton<TransactionRequestPayloadValidator>();
 
 var app = builder.Build();
 
@@ -24,7 +23,7 @@ var context = scope.ServiceProvider.GetRequiredService<DataContext>();
 context.Database.Migrate();
 app.Logger.LogInformation("Finish: database migration");
 
-app.MapPost("/transaction", (TransactionRequestPayload payload, TransactionRequestValidator payloadValidator) =>
+app.MapPost("/out-of-scope/generate-account", async (OutOfScopeGenerateAccountPayload payload, OutOfScopeGenerateAccountPayloadValidator payloadValidator, OutOfScopeHelperService outOfScopeHelperService) =>
 {
     var validationResult = payloadValidator.Validate(payload);
     if (!validationResult.IsValid)
@@ -32,7 +31,43 @@ app.MapPost("/transaction", (TransactionRequestPayload payload, TransactionReque
         return Results.BadRequest(validationResult.Errors);
     }
 
+    await outOfScopeHelperService.GenerateAccountAndAdditionalDataIfNecessary(
+        payload.accountId,
+        payload.foodPartitionInitialAmount,
+        payload.mealPartitionInitialAmount,
+        payload.cashPartitionInitialAmount
+    );
+
+    return Results.Ok($"Created /out-of-scope/generate-account/{payload.accountId}");
+});
+
+app.MapPost("/transaction", async (TransactionRequestPayload payload, TransactionRequestPayloadValidator payloadValidator, DataContext context, TransactionService transactionService) =>
+{
+    var validationResult = payloadValidator.Validate(payload);
+    if (!validationResult.IsValid)
+    {
+        return Results.BadRequest(validationResult.Errors);
+    }
+
+    TransactionRequest transactionRequest = payload.GenerateModel();
+    await transactionService.InsertTransactionRequest(transactionRequest);
+
+    TransactionResultCode resultCode = default;
+    var transaction = context.Database.BeginTransaction();
+    try
+    {
+        resultCode = await transactionService.ExecuteTransactionRequest(transactionRequest);
+        transaction.Commit();
+    }
+    catch (Exception)
+    {
+        resultCode = TransactionResultCode.REFUSED;
+        transaction.Rollback();
+    }
+
+    await transactionService.UpdateResultCode(transactionRequest, resultCode);
     return Results.Ok($"Created /transaction/{payload.account}");
+
 });
 
 app.Run();
