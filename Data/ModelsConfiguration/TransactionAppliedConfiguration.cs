@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CreditTransactionApi.Data;
 
-public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
+public class TransactionAppliedConfiguration : IEntityTypeConfiguration<TransactionEntry>
 {
-    public void Configure(EntityTypeBuilder<Transaction> builder)
+    public void Configure(EntityTypeBuilder<TransactionEntry> builder)
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
@@ -13,7 +13,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         builder.HasOne(e => e.TransactionRequest)
             .WithOne(e => e.CreditTransaction)
-            .HasForeignKey<Transaction>(e => e.TransactionRequestId)
+            .HasForeignKey<TransactionEntry>(e => e.TransactionRequestId)
             .IsRequired();
 
         builder.HasOne(e => e.AccountPartition)

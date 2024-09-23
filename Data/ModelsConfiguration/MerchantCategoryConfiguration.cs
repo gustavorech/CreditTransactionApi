@@ -11,5 +11,11 @@ public class MerchantCategoryConfiguration : IEntityTypeConfiguration<MerchantCa
 
         builder.Property(e => e.Description)
             .IsRequired();
+
+        builder.Property(e => e.AccountPartitionType)
+            .HasConversion(
+                v => v.ToString(),
+                v => (AccountPartitionType)Enum.Parse(typeof(AccountPartitionType), v))
+            .IsRequired();
     }
 }

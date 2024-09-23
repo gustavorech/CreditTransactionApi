@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240920231416_InitialMigration")]
+    [Migration("20240923184148_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -78,7 +78,7 @@ namespace Data.Migrations
 
                     b.HasIndex("MerchantCategoryCode");
 
-                    b.ToTable("Merchant");
+                    b.ToTable("Merchants");
                 });
 
             modelBuilder.Entity("CreditTransactionApi.Data.MerchantCategory", b =>
@@ -89,6 +89,10 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Code"));
 
+                    b.Property<string>("AccountPartitionType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -98,7 +102,7 @@ namespace Data.Migrations
                     b.ToTable("MerchantCategories");
                 });
 
-            modelBuilder.Entity("CreditTransactionApi.Data.Transaction", b =>
+            modelBuilder.Entity("CreditTransactionApi.Data.TransactionEntry", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +132,7 @@ namespace Data.Migrations
                     b.HasIndex("TransactionRequestId")
                         .IsUnique();
 
-                    b.ToTable("Transactions");
+                    b.ToTable("TransactionEntries");
                 });
 
             modelBuilder.Entity("CreditTransactionApi.Data.TransactionRequest", b =>
@@ -184,7 +188,7 @@ namespace Data.Migrations
                     b.Navigation("MerchantCategory");
                 });
 
-            modelBuilder.Entity("CreditTransactionApi.Data.Transaction", b =>
+            modelBuilder.Entity("CreditTransactionApi.Data.TransactionEntry", b =>
                 {
                     b.HasOne("CreditTransactionApi.Data.AccountPartition", "AccountPartition")
                         .WithMany("Transactions")
@@ -198,7 +202,7 @@ namespace Data.Migrations
 
                     b.HasOne("CreditTransactionApi.Data.TransactionRequest", "TransactionRequest")
                         .WithOne("CreditTransaction")
-                        .HasForeignKey("CreditTransactionApi.Data.Transaction", "TransactionRequestId")
+                        .HasForeignKey("CreditTransactionApi.Data.TransactionEntry", "TransactionRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

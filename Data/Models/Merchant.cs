@@ -10,5 +10,5 @@ public class Merchant
     public int MerchantCategoryCode { get; set; }
     public MerchantCategory MerchantCategory { get; set; } = null!;
 
-    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public ICollection<TransactionEntry> Transactions { get; set; } = new List<TransactionEntry>();
 }

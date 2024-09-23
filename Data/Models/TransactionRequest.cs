@@ -13,5 +13,5 @@ public class TransactionRequest
     public DateTimeOffset TransactionDate { get; set; }
     public string? ResultCode { get; set; } = null!;
 
-    public Transaction? CreditTransaction { get; set; } = null!;
+    public TransactionEntry? CreditTransaction { get; set; } = null!;
 }

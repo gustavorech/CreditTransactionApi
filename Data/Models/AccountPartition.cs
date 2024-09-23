@@ -11,5 +11,5 @@ public class AccountPartition
     public AccountPartitionType AccountPartitionType { get; set; }
     public decimal Balance { get; set; }
 
-    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public ICollection<TransactionEntry> Transactions { get; set; } = new List<TransactionEntry>();
 }

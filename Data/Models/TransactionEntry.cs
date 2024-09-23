@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CreditTransactionApi.Data;
 
-[EntityTypeConfiguration(typeof(TransactionConfiguration))]
-public class Transaction
+[EntityTypeConfiguration(typeof(TransactionAppliedConfiguration))]
+public class TransactionEntry
 {
     public Guid Id { get; set; }
     public Guid TransactionRequestId { get; set; }

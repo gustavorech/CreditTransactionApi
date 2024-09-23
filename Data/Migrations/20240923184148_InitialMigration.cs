@@ -32,7 +32,8 @@ namespace Data.Migrations
                 {
                     Code = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    AccountPartitionType = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,7 +78,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Merchant",
+                name: "Merchants",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -86,9 +87,9 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Merchant", x => x.Id);
+                    table.PrimaryKey("PK_Merchants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Merchant_MerchantCategories_MerchantCategoryCode",
+                        name: "FK_Merchants_MerchantCategories_MerchantCategoryCode",
                         column: x => x.MerchantCategoryCode,
                         principalTable: "MerchantCategories",
                         principalColumn: "Code",
@@ -96,7 +97,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
+                name: "TransactionEntries",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -108,20 +109,20 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.PrimaryKey("PK_TransactionEntries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_AccountPartitions_AccountPartitionId",
+                        name: "FK_TransactionEntries_AccountPartitions_AccountPartitionId",
                         column: x => x.AccountPartitionId,
                         principalTable: "AccountPartitions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transactions_Merchant_MerchantId",
+                        name: "FK_TransactionEntries_Merchants_MerchantId",
                         column: x => x.MerchantId,
-                        principalTable: "Merchant",
+                        principalTable: "Merchants",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Transactions_TransactionRequests_TransactionRequestId",
+                        name: "FK_TransactionEntries_TransactionRequests_TransactionRequestId",
                         column: x => x.TransactionRequestId,
                         principalTable: "TransactionRequests",
                         principalColumn: "Id",
@@ -134,23 +135,23 @@ namespace Data.Migrations
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Merchant_MerchantCategoryCode",
-                table: "Merchant",
+                name: "IX_Merchants_MerchantCategoryCode",
+                table: "Merchants",
                 column: "MerchantCategoryCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_AccountPartitionId",
-                table: "Transactions",
+                name: "IX_TransactionEntries_AccountPartitionId",
+                table: "TransactionEntries",
                 column: "AccountPartitionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_MerchantId",
-                table: "Transactions",
+                name: "IX_TransactionEntries_MerchantId",
+                table: "TransactionEntries",
                 column: "MerchantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_TransactionRequestId",
-                table: "Transactions",
+                name: "IX_TransactionEntries_TransactionRequestId",
+                table: "TransactionEntries",
                 column: "TransactionRequestId",
                 unique: true);
         }
@@ -159,13 +160,13 @@ namespace Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "TransactionEntries");
 
             migrationBuilder.DropTable(
                 name: "AccountPartitions");
 
             migrationBuilder.DropTable(
-                name: "Merchant");
+                name: "Merchants");
 
             migrationBuilder.DropTable(
                 name: "TransactionRequests");
