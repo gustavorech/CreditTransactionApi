@@ -1,5 +1,6 @@
 using CreditTransactionApi.Data;
 using CreditTransactionApi.Services;
+using CreditTransactionApi.Web;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -15,8 +16,8 @@ builder.Services.AddSingleton<TransactionRequestPayloadValidator>();
 builder.Services.AddSingleton<OutOfScopeGenerateAccountPayloadValidator>();
 
 builder.Services.AddScoped<OutOfScopeHelperService>();
-builder.Services.AddScoped<TransactionService>();
-builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
@@ -60,12 +61,12 @@ app.MapGet("/out-of-scope/account/{accountId}/requests", async (int accountId, O
     return Results.Ok(result);
 });
 
-app.MapPost("/transaction", async (TransactionRequestPayload payload, TransactionRequestPayloadValidator payloadValidator, DataContext context, TransactionService transactionService) =>
+app.MapPost("/transaction", async (TransactionRequestPayload payload, TransactionRequestPayloadValidator payloadValidator, DataContext context, ITransactionService transactionService) =>
 {
     var validationResult = payloadValidator.Validate(payload);
     if (!validationResult.IsValid)
     {
-        return Results.BadRequest(validationResult.Errors);
+        return Results.Ok(new TransactionRequestResponse(TransactionResultCode.REFUSED));
     }
 
     TransactionRequest transactionRequest = payload.GenerateModel();
@@ -85,7 +86,7 @@ app.MapPost("/transaction", async (TransactionRequestPayload payload, Transactio
     }
 
     await transactionService.UpdateResultCode(transactionRequest, resultCode);
-    return Results.Ok($"Created /transaction/{payload.account}");
+    return Results.Ok(new TransactionRequestResponse(resultCode));
 
 });
 

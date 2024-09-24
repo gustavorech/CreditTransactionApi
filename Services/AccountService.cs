@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CreditTransactionApi.Services;
 
-public class AccountService
+public class AccountService : IAccountService
 {
     private readonly DataContext context;
 

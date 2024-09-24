@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CreditTransactionApi.Services;
 
-public class TransactionService
+public class TransactionService : ITransactionService
 {
     private readonly DataContext context;
-    private readonly AccountService accountService;
+    private readonly IAccountService accountService;
 
     public TransactionService(
         DataContext context,
-        AccountService accountService)
+        IAccountService accountService)
     {
         this.context = context;
         this.accountService = accountService;
