@@ -8,6 +8,7 @@ COPY Web/*.csproj ./Web/
 COPY Services/*.csproj ./Services/
 COPY Data/*.csproj ./Data/
 COPY UnitTests/*.csproj ./UnitTests/
+COPY IntegrationTests/*.csproj ./IntegrationTests/
 RUN dotnet restore
 
 # copy everything else and build app

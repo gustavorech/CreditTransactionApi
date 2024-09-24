@@ -1,0 +1,36 @@
+services:
+  integration-tests:
+    container_name: CreditTransactionApi_IntegrationTests
+    build: 
+      context: ../
+      dockerfile: Infrastructure/Dockerfile.IntegrationTests
+    env_file:
+      - ".env"
+    ports:
+      - "${WEB_PORT}:8080"
+    healthcheck:
+      test: curl --fail http://localhost:${WEB_PORT}/healthcheck || exit 1
+      interval: 500ms
+      timeout: 5s
+      retries: 10
+    depends_on:
+      postgres-integration-tests:
+        condition: service_healthy
+  postgres-integration-tests:
+    image: postgres:latest
+    container_name: CreditTransactionApi_Postgres_IntegrationTests
+    env_file:
+      - ".env"
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: always
+    healthcheck:
+      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      interval: 500ms
+      timeout: 5s
+      retries: 10
+    volumes:
+      - CreditTransactionApi_Postgres_IntegrationTests:/var/lib/postgresql/data
+volumes:
+  CreditTransactionApi_Postgres_IntegrationTests:
+    driver: local

@@ -1,0 +1,11 @@
+# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+WORKDIR /source
+
+# copy everything else and build app
+COPY UnitTests/. ./UnitTests/
+COPY Web/. ./Web/
+COPY Services/. ./Services/
+COPY Data/. ./Data/
+WORKDIR /source/UnitTests
+CMD ["dotnet", "test", "-v:q", "--nologo", "-l:console;verbosity=normal"]

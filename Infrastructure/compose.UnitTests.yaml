@@ -1,0 +1,6 @@
+services:
+  unit-tests:
+    container_name: CreditTransactionApi_UnitTests
+    build: 
+      context: ../
+      dockerfile: Infrastructure/Dockerfile.UnitTests
