@@ -1,7 +1,5 @@
 using CreditTransactionApi.Data;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace CreditTransactionApi.Services;
 
 public interface ITransactionService
