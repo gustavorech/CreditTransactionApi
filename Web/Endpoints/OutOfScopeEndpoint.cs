@@ -6,9 +6,11 @@ public static class OutOfScopeEndpoint
 {
     public static void UseOutOfScopeEndpoints(this WebApplication app)
     {
-        app.MapPost("/out-of-scope/generate-account", OutOfScopeEndpoint.GenerateAccountAndAdditionalDataIfNecessary);
-        app.MapGet("/out-of-scope/account/{accountId}/balance", OutOfScopeEndpoint.GetAccountBalance);
-        app.MapGet("/out-of-scope/account/{accountId}/requests", OutOfScopeEndpoint.ListCompleteTransactionRequests);
+        var outOfScopeEndpoints = app.MapGroup("/out-of-scope");
+
+        outOfScopeEndpoints.MapPost("generate-account", OutOfScopeEndpoint.GenerateAccountAndAdditionalDataIfNecessary);
+        outOfScopeEndpoints.MapGet("account/{accountId}/balance", OutOfScopeEndpoint.GetAccountBalance);
+        outOfScopeEndpoints.MapGet("account/{accountId}/requests", OutOfScopeEndpoint.ListCompleteTransactionRequests);
     }
 
     public static async Task<IResult> GenerateAccountAndAdditionalDataIfNecessary(
