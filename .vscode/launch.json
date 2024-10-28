@@ -1,0 +1,56 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Docker .NET Attach (Preview)",
+            "type": "docker",
+            "request": "attach",
+            "platform": "netCore",
+            "sourceFileMap": {
+                "/src": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Web/bin/Debug/net8.0/Web.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Web",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+            },
+            "env": {
+                "ASPNETCORE_URLS": "http://localhost:5201",
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "COMPOSE_PROJECT_NAME": "credit-transaction-api",
+                "WEB_PORT": "5201",
+                "POSTGRES_PORT": "5432",
+                "POSTGRES_USER": "root",
+                "POSTGRES_PASSWORD": "1111",
+                "POSTGRES_HOST": "localhost",
+                "POSTGRES_DB": "CreditTransaction"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        },
+        {
+            "name": "Docker .NET Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "netCore": {
+                "appProject": "${workspaceFolder}/Web/Web.csproj"
+            }
+        }
+    ]
+}

@@ -1,0 +1,40 @@
+services:
+  web:
+    container_name: CreditTransactionApi_Web_Debug
+    build: 
+      context: ../
+      dockerfile: Infrastructure/Dockerfile
+      args:
+        - configuration=Debug
+    env_file:
+      - ".env"
+    ports:
+      - "${WEB_PORT}:8080"
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+    healthcheck:
+      test: curl --fail http://localhost:${WEB_PORT}/healthcheck || exit 1
+      interval: 500ms
+      timeout: 5s
+      retries: 10
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres:latest
+    container_name: CreditTransactionApi_Postgres_Local
+    env_file:
+      - ".env"
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: always
+    healthcheck:
+      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      interval: 500ms
+      timeout: 5s
+      retries: 10
+    volumes:
+      - CreditTransactionApi_Postgres_Local:/var/lib/postgresql/data
+volumes:
+  CreditTransactionApi_Postgres_Local:
+    driver: local

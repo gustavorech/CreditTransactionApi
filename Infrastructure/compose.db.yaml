@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: CreditTransactionApi_Postgres_Local
+    env_file:
+      - ".env"
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: always
+    healthcheck:
+      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      interval: 500ms
+      timeout: 5s
+      retries: 10
+    volumes:
+      - CreditTransactionApi_Postgres_Local:/var/lib/postgresql/data
+volumes:
+  CreditTransactionApi_Postgres_Local:
+    driver: local
